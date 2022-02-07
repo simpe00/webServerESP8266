@@ -1,3 +1,7 @@
+https://circuits4you.com/2018/02/04/esp8266-ajax-update-part-of-web-page-without-refreshing/
+
+https://wiki.selfhtml.org/wiki/JavaScript/Tutorials/Wert%C3%BCbergabe_zwischen_verschiedenen_HTML-Dokumenten
+
 # WebServer example documentation and hints
 
 This example shows different techniques on how to use and extend the ESP8266WebServer for specific purposes

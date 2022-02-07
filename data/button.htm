@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>The script element</h1>
+<input type = "button" onclick = "clickButton1()" value = "toggle" id = Button1>  
+<p id="demo"></p>
+
+<script>
+
+function Werteliste (querystring) {
+  if (querystring == '') return;
+  var wertestring = querystring.slice(1);
+  var paare = wertestring.split("&");
+  var paar, name, wert;
+  for (var i = 0; i < paare.length; i++) {
+    paar = paare[i].split("=");
+    name = paar[0];
+    wert = paar[1];
+    name = unescape(name).replace("+", " ");
+    wert = unescape(wert).replace("+", " ");
+    this[name] = wert;
+  }
+}
+var liste = new Werteliste(location.search);
+
+var buttonState1;
+
+if (liste.q == "0") {
+    document.getElementById("Button1").style = "background-color:red";    
+    buttonState1 = false;
+} else if (liste.q == "1")
+{
+    document.getElementById("Button1").style = "background-color:green";    
+    buttonState1 = true;
+} else
+{
+    document.getElementById("Button1").style = "background-color:red";
+    buttonState1 = false;
+}
+
+// document.getElementById("Button1").style = "background-color:red";
+
+function clickButton1() {
+    if (buttonState1){
+        window.open(window.location.href.split('?')[0]+"/0?q=0", "_self");
+    } else 
+    {
+        window.open(window.location.href.split('?')[0]+"/0?q=1", "_self");
+    }
+    
+}
+
+</script> 
+
+</body>
+</html>

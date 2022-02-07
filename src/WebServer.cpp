@@ -18,7 +18,7 @@
 #define UNUSED __attribute__((unused))
 
 // TRACE output simplified, can be deactivated here
-#define TRACE(...) Serial.printf(__VA_ARGS__)
+#define TRACE(...) Serial.println(__VA_ARGS__)
 
 // name of the server. You reach it using http://webserver
 #define HOSTNAME "webserver"
@@ -38,7 +38,7 @@ ESP8266WebServer server(80);
 // This function is called when the WebServer was requested without giving a filename.
 // This will redirect to the file index.htm when it is existing otherwise to the built-in $upload.htm page
 void handleRedirect() {
-  TRACE("Redirect...");
+  // TRACE("Redirect...");
   String url = "/index.htm";
 
   if (!LittleFS.exists(url)) {
@@ -49,6 +49,12 @@ void handleRedirect() {
   server.send(302);
 } // handleRedirect()
 
+void getBackToButtonPage(String query) {
+  String url = "/button.htm?q="+query;
+
+  server.sendHeader("Location", url, true);
+  server.send(302);
+}
 
 // This function is called when the WebServer was requested to list all existing files in the filesystem.
 // a JSON array with file information is returned.
@@ -93,6 +99,21 @@ void handleSysInfo() {
 } // handleSysInfo()
 
 
+void button1off() {
+  String query = (server.arg("q"));
+  getBackToButtonPage(query);
+
+  TRACE(("Button 1 is set to: "+query).c_str());
+}
+
+void button1on() {
+  String query = (server.arg("q"));
+  getBackToButtonPage(query);
+
+  Serial.println("Button 1 is set to: "+query);
+  TRACE("Button 1 is set to: on");
+}
+
 // ===== Request Handler class used to answer more complex requests =====
 
 // The FileServerHandler is registered to the web server to support DELETE and UPLOAD of files into the filesystem.
@@ -103,7 +124,7 @@ class FileServerHandler : public RequestHandler {
     // @param path Path to the root folder in the file system that is used for serving static data down and upload.
     // @param cache_header Cache Header to be used in replies.
     FileServerHandler() {
-      TRACE("FileServerHandler is registered\n");
+      // TRACE("FileServerHandler is registered\n");
     }
 
 
@@ -182,14 +203,15 @@ void setup(void) {
   delay(3000); // wait for serial monitor to start completely.
 
   // Use Serial port for some trace information from the example
-  Serial.begin(115200);
-  Serial.setDebugOutput(false);
+  Serial.begin(9600);
+  Serial.println("start testing now");
+  // Serial.setDebugOutput(false);
 
-  TRACE("Starting WebServer example...\n");
+  // TRACE("Starting WebServer example...\n");
 
-  TRACE("Mounting the filesystem...\n");
+  // TRACE("Mounting the filesystem...\n");
   if (!LittleFS.begin()) {
-    TRACE("could not mount the filesystem...\n");
+    // TRACE("could not mount the filesystem...\n");
     delay(2000);
     ESP.restart();
   }
@@ -205,18 +227,18 @@ void setup(void) {
   // allow to address the device by the given name e.g. http://webserver
   WiFi.setHostname(HOSTNAME);
 
-  TRACE("Connect to WiFi...\n");
+  // TRACE("Connect to WiFi...\n");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    TRACE(".");
+    // TRACE(".");
   }
-  TRACE("connected.\n");
+  // TRACE("connected.\n");
 
   // Ask for the current time using NTP request builtin into ESP firmware.
-  TRACE("Setup ntp...\n");
+  // TRACE("Setup ntp...\n");
   configTime(TIMEZONE, "pool.ntp.org");
 
-  TRACE("Register service handlers...\n");
+  // TRACE("Register service handlers...\n");
 
   // serve a built-in htm page
   server.on("/$upload.htm", []() {
@@ -229,6 +251,11 @@ void setup(void) {
   // register some REST services
   server.on("/$list", HTTP_GET, handleListFiles);
   server.on("/$sysinfo", HTTP_GET, handleSysInfo);
+
+  // server.on("/button.htm", HTTP_GET, handleButtonPage);
+
+  server.on("/button.htm/0", button1off);
+	server.on("/button.htm/1", button1on);
 
   // UPLOAD and DELETE of files in the file system using a request handler.
   server.addHandler(new FileServerHandler());
@@ -249,13 +276,10 @@ void setup(void) {
   });
 
   server.begin();
-  TRACE("hostname=%s\n", WiFi.getHostname());
+  // TRACE("hostname=%s\n", WiFi.getHostname());
 } // setup
 
 
-// run the server...
 void loop(void) {
   server.handleClient();
-} // loop()
-
-// end.
+}
