@@ -2,9 +2,11 @@
 <html>
 <body>
 
-<h1>The script element</h1>
-<input type = "button" onclick = "clickButton1()" value = "toggle" id = Button1>  
-<p id="demo"></p>
+<h1>Bauwagen Auchtert</h1>
+<img src="bauwagen.jpg" alt="logo" width="128" height="128" style="vertical-align:middle">
+
+<input type = "button" onclick = "clickButton1()" value = "toggle" id = Button1>
+<input type = "button" onclick = "clickButton2()" value = "toggle" id = Button2>  
 
 <script>
 
@@ -24,12 +26,12 @@ function Werteliste (querystring) {
 }
 var liste = new Werteliste(location.search);
 
-var buttonState1;
 
-if (liste.q == "0") {
+var buttonState1;
+if (liste.B1 == "0") {
     document.getElementById("Button1").style = "background-color:red";    
     buttonState1 = false;
-} else if (liste.q == "1")
+} else if (liste.B1 == "1")
 {
     document.getElementById("Button1").style = "background-color:green";    
     buttonState1 = true;
@@ -39,14 +41,38 @@ if (liste.q == "0") {
     buttonState1 = false;
 }
 
+var buttonState2;
+if (liste.B2 == "0") {
+    document.getElementById("Button2").style = "background-color:red";    
+    buttonState2 = false;
+} else if (liste.B2 == "1")
+{
+    document.getElementById("Button2").style = "background-color:green";    
+    buttonState2 = true;
+} else
+{
+    document.getElementById("Button2").style = "background-color:red";
+    buttonState2 = false;
+}
+
 // document.getElementById("Button1").style = "background-color:red";
 
 function clickButton1() {
     if (buttonState1){
-        window.open(window.location.href.split('?')[0]+"/0?q=0", "_self");
+        window.open(window.location.href.split('?')[0]+"/1?B1=0", "_self");
     } else 
     {
-        window.open(window.location.href.split('?')[0]+"/0?q=1", "_self");
+        window.open(window.location.href.split('?')[0]+"/1?B1=1", "_self");
+    }
+    
+}
+
+function clickButton2() {
+    if (buttonState2){
+        window.open(window.location.href.split('?')[0]+"/2?B2=0", "_self");
+    } else 
+    {
+        window.open(window.location.href.split('?')[0]+"/2?B2=1", "_self");
     }
     
 }
