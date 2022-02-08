@@ -18,6 +18,9 @@
 // need a WebServer for http access on port 80.
 ESP8266WebServer server(80);
 
+bool stateButton1;
+bool stateButton2;
+
 
 // ===== Simple functions used to answer simple GET requests =====
 
@@ -33,8 +36,11 @@ void handleRedirect() {
 }
 
 
-void getBackToButtonPageWithQuery(String queryName, String query) {
-  String url = "/button.htm?" + queryName + "=" + query;
+void getBackToButtonPageWithQuery() {
+  String stateTemp = (stateButton1) ? "1" : "0";
+  String url = "/button.htm?B1=" + stateTemp;
+  stateTemp = (stateButton2) ? "1" : "0";
+  url = url + "&B2="+ stateTemp;
 
   server.sendHeader("Location", url, true);
   server.send(302);
@@ -81,21 +87,35 @@ void handleSysInfo() {
 }
 
 
-void buttonAcknowledge1() {
+void buttonPush() {
   String queryName = (server.argName(0));
   String query = (server.arg(0));
-  getBackToButtonPageWithQuery(queryName, query);
 
-  TRACE(("Button 1 is set to: "+query).c_str());
-}
+  bool queryState;
+  if(query == "0")
+  {
+    queryState = false;
+  } else if (query == "1")
+  {
+    queryState = true;
+  } else
+  {
+    TRACE("query value must be 0 or 1");
+    queryState = false;
+  }
+  
 
+  if(queryName=="B1")
+  {
+    stateButton1 = queryState;
+  } else if (queryName=="B2")
+  {
+    stateButton2 = queryState;
+  }
 
-void buttonAcknowledge2() {
-  String queryName = (server.argName(0));
-  String query = (server.arg(0));
-  getBackToButtonPageWithQuery(queryName, query);
+  getBackToButtonPageWithQuery();
 
-  TRACE(("Button 2 is set to: "+query).c_str());
+  TRACE(("Button "+queryName+" is set to: "+query).c_str());
 }
 
 
@@ -137,8 +157,7 @@ void setup(void) {
   // register some REST services
   server.on("/$list", HTTP_GET, handleListFiles);
   server.on("/$sysinfo", HTTP_GET, handleSysInfo);
-  server.on("/button.htm/1", buttonAcknowledge1);
-	server.on("/button.htm/2", buttonAcknowledge2);
+  server.on("/button.htm/push", buttonPush);
 
   // serve all static files
   server.serveStatic("/", LittleFS, "/");
@@ -151,6 +170,9 @@ void setup(void) {
   server.begin();
   String hostname = WiFi.getHostname();
   TRACE(("hostname = " + hostname).c_str());
+
+  stateButton1 = false;
+  stateButton2 = false;
 }
 
 

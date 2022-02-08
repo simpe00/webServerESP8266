@@ -29,11 +29,11 @@ var liste = new Werteliste(location.search);
 
 var buttonState1;
 if (liste.B1 == "0") {
-    document.getElementById("Button1").style = "background-color:red";    
+    document.getElementById("Button1").style = "background-color:red";
     buttonState1 = false;
 } else if (liste.B1 == "1")
 {
-    document.getElementById("Button1").style = "background-color:green";    
+    document.getElementById("Button1").style = "background-color:green";
     buttonState1 = true;
 } else
 {
@@ -43,12 +43,12 @@ if (liste.B1 == "0") {
 
 var buttonState2;
 if (liste.B2 == "0") {
-    document.getElementById("Button2").style = "background-color:red";    
-    buttonState2 = false;
+    document.getElementById("Button2").style = "background-color:red";  
+    buttonState2 = false; 
 } else if (liste.B2 == "1")
 {
-    document.getElementById("Button2").style = "background-color:green";    
-    buttonState2 = true;
+    document.getElementById("Button2").style = "background-color:green";   
+    buttonState2 = true; 
 } else
 {
     document.getElementById("Button2").style = "background-color:red";
@@ -59,22 +59,20 @@ if (liste.B2 == "0") {
 
 function clickButton1() {
     if (buttonState1){
-        window.open(window.location.href.split('?')[0]+"/1?B1=0", "_self");
+        window.open(window.location.href.split('?')[0]+"/push?B1=0", "_self");
     } else 
     {
-        window.open(window.location.href.split('?')[0]+"/1?B1=1", "_self");
-    }
-    
+        window.open(window.location.href.split('?')[0]+"/push?B1=1", "_self");
+    }    
 }
 
 function clickButton2() {
     if (buttonState2){
-        window.open(window.location.href.split('?')[0]+"/2?B2=0", "_self");
+        window.open(window.location.href.split('?')[0]+"/push?B2=0", "_self");
     } else 
     {
-        window.open(window.location.href.split('?')[0]+"/2?B2=1", "_self");
+        window.open(window.location.href.split('?')[0]+"/push?B2=1", "_self");
     }
-    
 }
 
 </script> 
